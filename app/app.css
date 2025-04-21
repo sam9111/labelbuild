@@ -1,15 +1,42 @@
+@import url("https://fonts.googleapis.com/css2?family=Special+Gothic+Expanded+One&display=swap");
 @import "tailwindcss";
 
+@plugin "flowbite-react/plugin/tailwindcss";
+@source "../.flowbite-react/class-list.json";
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-special: "Special Gothic Expanded One", sans-serif;
 }
 
+@custom-variant dark (&:where(.dark, .dark *));
 html,
 body {
-  @apply bg-white dark:bg-gray-950;
+}
 
-  @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
+/* General styles for the print-container */
+.print-container {
+  overflow-y: auto; /* Enable vertical scrolling */
+  max-height: 100vh; /* Limit height to viewport */
+}
+
+/* Styles specifically for printing */
+@media print {
+  .print-container {
+    overflow: visible; /* Disable scrolling for print */
+    max-height: unset; /* Allow full content to be printed */
+  }
+
+  .print-container > div {
+    border: none;
+    box-shadow: none;
+    page-break-inside: avoid; /* Avoid breaking individual orders */
+    page-break-after: always; /* Ensure each order starts on a new page */
+    width: var(--label-width);
+    height: var(--label-height);
+  }
+
+  .print-container > div:last-child {
+    page-break-after: auto; /* Prevent extra blank page after the last order */
   }
 }
