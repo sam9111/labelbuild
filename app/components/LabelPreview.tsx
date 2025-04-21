@@ -8,7 +8,7 @@ const useReactToPrint = ReactToPrint.useReactToPrint;
 const LabelPreview = () => {
   const { brandLogoURL, ordersData, details, fromDetails, labelSize } =
     useStore();
-  const contentRef = useRef(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const handlePrint = useReactToPrint({
     contentRef,
   });
@@ -25,10 +25,12 @@ const LabelPreview = () => {
     const scaleFactorHeight = parseFloat(height.trim()) / baseHeight;
     const scaleFactor = Math.min(scaleFactorWidth, scaleFactorHeight);
 
-    const printDivs = document.querySelectorAll(".print-container > div");
-    printDivs.forEach((div) => {
+    const printDivs = contentRef.current?.querySelectorAll(
+      ".print-container > div"
+    );
+    printDivs?.forEach((div) => {
       const element = div as HTMLElement;
-      element.style.fontSize = `${0.8 * scaleFactor}rem `; // Adjust font size
+      element.style.fontSize = `${0.8 * scaleFactor}rem`; // Adjust font size
       element.style.gap = `${8 * scaleFactor}px`; // Adjust gaps
       element.style.padding = `${8 * scaleFactor}px`; // Adjust padding
       element.style.width = `${width.trim()}in`; // Set width
@@ -36,8 +38,8 @@ const LabelPreview = () => {
     });
 
     // Scale the image inside the print div accordingly
-    const images = document.querySelectorAll(".print-container img");
-    images.forEach((img) => {
+    const images = contentRef.current?.querySelectorAll(".print-container img");
+    images?.forEach((img) => {
       const element = img as HTMLImageElement;
       element.style.maxWidth = `${parseFloat(width.trim()) * 0.5}in`; // Scale image width
       element.style.maxHeight = `${parseFloat(height.trim()) * 0.5}in`; // Scale image height
@@ -58,7 +60,10 @@ const LabelPreview = () => {
         </Button>
       </div>
       <HelperText>Labels will be printed in dimensions: {labelSize}</HelperText>
-      <div ref={contentRef} className="print-container flex flex-col gap-4 ">
+      <div
+        ref={contentRef}
+        className="print-container flex flex-col gap-4 mx-auto"
+      >
         {ordersData.map((order, index) => (
           <div
             key={index}
