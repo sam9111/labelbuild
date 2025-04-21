@@ -20,8 +20,11 @@ import FromDetails from "~/components/FromDetails";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "New React Router App" },
-    { name: "description", content: "Welcome to React Router!" },
+    { title: "LabelBuild" },
+    {
+      name: "description",
+      content: "Bulk generate shipping labels for your Shopify Business",
+    },
   ];
 }
 

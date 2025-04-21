@@ -59,7 +59,9 @@ const LabelPreview = () => {
           Print Labels
         </Button>
       </div>
-      <HelperText>Labels will be printed in dimensions: {labelSize}</HelperText>
+      <HelperText className="mx-auto">
+        Labels will be printed in dimensions of {labelSize} inches
+      </HelperText>
       <div
         ref={contentRef}
         className="print-container flex flex-col gap-4 mx-auto"
