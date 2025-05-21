@@ -17,7 +17,18 @@ export default function FileUpload() {
         const csvText = e.target?.result;
         if (typeof csvText === "string") {
           const data = csvToJson(csvText);
-          updateOrdersData(data);
+
+          const filteredData: any[] = [];
+
+          data.forEach((row: any) => {
+            if (filteredData.find((r) => r["Name"] === row["Name"])) {
+              return;
+            }
+
+            filteredData.push(row);
+          });
+
+          updateOrdersData(filteredData);
         }
       };
 

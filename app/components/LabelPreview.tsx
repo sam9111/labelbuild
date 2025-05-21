@@ -35,6 +35,10 @@ const LabelPreview = () => {
       element.style.padding = `${8 * scaleFactor}px`; // Adjust padding
       element.style.width = `${width.trim()}in`; // Set width
       element.style.height = `${height.trim()}in`; // Set height
+
+      // Add page break styles
+      element.style.pageBreakInside = "avoid";
+      element.style.pageBreakAfter = "always";
     });
 
     // Scale the image inside the print div accordingly
@@ -48,71 +52,93 @@ const LabelPreview = () => {
   }, [labelSize]);
 
   return (
-    <div className="flex flex-col gap-4  h-screen  ">
-      <div className="place-items-end flex flex-col gap-2">
-        <LabelSize />
+    <>
+      <style>
+        {`
+        @media print {
+      
+          .print-container {
+   
+    margin: 0 !important;
+    padding: 0 !important;
+ height: initial !important;
+    overflow: initial !important;
+          }
+    
+        }
+      `}
+      </style>
+      <div className="flex flex-col gap-4    ">
+        <div className="place-items-end flex flex-col gap-2">
+          <LabelSize />
 
-        <Button
-          className="!bg-black text-white hover:!bg-gray-700 focus:!ring-none font-special"
-          onClick={() => handlePrint()}
-        >
-          Print Labels
-        </Button>
-      </div>
-      <HelperText className="mx-auto">
-        Labels will be printed in dimensions of {labelSize} inches
-      </HelperText>
-      <div
-        ref={contentRef}
-        className="print-container flex flex-col gap-4 mx-auto"
-      >
-        {ordersData.map((order, index) => (
-          <div
-            key={index}
-            className="flex flex-col  bg-white shadow-xl border border-gray-200"
+          <Button
+            className="!bg-black text-white hover:!bg-gray-700 focus:!ring-none font-special"
+            onClick={() => handlePrint()}
           >
-            {brandLogoURL && (
-              <img src={brandLogoURL} alt="Brand Logo" className="mx-auto" />
-            )}
-            <h3 className="font-semibold">{order["Name"]}</h3>
+            Print Labels
+          </Button>
+        </div>
+        <div className="mx-auto ">
+          <HelperText className="">
+            Labels will be printed in dimensions of {labelSize} inches
+          </HelperText>
+          <div ref={contentRef} className="print-container ">
+            {ordersData.map((order, index) => (
+              <div
+                key={index}
+                className="flex flex-col  bg-white shadow-xl border border-gray-200 mb-4 p-2"
+              >
+                {brandLogoURL && (
+                  <img
+                    src={brandLogoURL}
+                    alt="Brand Logo"
+                    className="mx-auto"
+                  />
+                )}
+                <h3 className="font-semibold">{order["Name"]}</h3>
 
-            <h4 className="font-semibold">TO</h4>
-            <div className=" border p-2">
-              {details.map((detail) => {
-                if (detail.includeInReceiver) {
-                  return <div className="">{order[detail.detail]}</div>;
-                }
-                return null;
-              })}
-            </div>
+                <h4 className="font-semibold">TO</h4>
+                <div className=" border p-2">
+                  {details.map((detail) => {
+                    if (detail.includeInReceiver) {
+                      return <div className="">{order[detail.detail]}</div>;
+                    }
+                    return null;
+                  })}
+                </div>
 
-            <h4 className=" font-semibold">FROM</h4>
-            <div className="border p-2">
-              {fromDetails &&
-                (fromDetails?.split("\n") ?? []).map((line, index) => (
-                  <div key={index}>{line}</div>
-                ))}
-            </div>
+                <h4 className=" font-semibold">FROM</h4>
+                <div className="border p-2">
+                  {fromDetails &&
+                    (fromDetails?.split("\n") ?? []).map((line, index) => (
+                      <div key={index}>{line}</div>
+                    ))}
+                </div>
 
-            {details.find((detail) => detail.includeInAdditional) && (
-              <div className="border p-2">
-                {details.map((detail) => {
-                  if (detail.includeInAdditional) {
-                    return (
-                      <div key={detail.detail} className="flex flex-col">
-                        <span className=" font-semibold">{detail.detail}</span>
-                        <span className="">{order[detail.detail]}</span>
-                      </div>
-                    );
-                  }
-                  return null;
-                })}
+                {details.find((detail) => detail.includeInAdditional) && (
+                  <div className="border p-2">
+                    {details.map((detail) => {
+                      if (detail.includeInAdditional) {
+                        return (
+                          <div key={detail.detail} className="flex flex-col">
+                            <span className=" font-semibold">
+                              {detail.detail}
+                            </span>
+                            <span className="">{order[detail.detail]}</span>
+                          </div>
+                        );
+                      }
+                      return null;
+                    })}
+                  </div>
+                )}
               </div>
-            )}
+            ))}
           </div>
-        ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 export default LabelPreview;
